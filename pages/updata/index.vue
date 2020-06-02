@@ -1,8 +1,4 @@
 
-<!-- <view class="l-size-item l-my-flex-bw" v-for="(item,index) in list" :key="index">
-					<view>{{item}}</view>
-					<view><image src="../../static/del.png" mode=""></image></view>
-				</view> -->
 <template>
 	<view class="content">
 		<!-- 规格一 -->
