@@ -6,23 +6,21 @@
 <template>
 	<view class="content">
 		<!-- 规格一 -->
-				
 		<view class="l-size" v-if="typeList[0]">
-			 <!-- v-for="(item,index) in typeList" :key="index" -->
 			<view class=" l-my-flex-bw ">
 				<view class="l-size-title">{{typeList[0].size}}</view>
-				<view><u-icon name="close" color="#B1B1B6" size="28"></u-icon></view>
+				<view @tap="del_type0"><u-icon name="close" color="#B1B1B6" size="28"></u-icon></view>
 			</view>
 			<!-- 颜色种类 -->
 			<view class="l-my-flex-start">
 				
-				<view class="l-size-item l-my-flex-bw" v-for="(item,index) in list0" :key="index">
+				<view class="l-size-item l-my-flex-bw" v-for="(item,index) in list0" :key="index" @tap="del0">
 					<view>{{item.size}}</view>
-					<view><image src="../../static/del.png" mode=""></image></view>
+					<view :data-index="index"><image :data-index="index" src="../../static/del.png" mode=""></image></view>
 				</view>
 				
 				<!-- 添加 -->
-				<view @click="addSize0">
+				<view @tap="addSize0">
 					<view class="l-size-item l-my-flex-center" v-if="!addStatus0">
 						<view><u-icon name="plus" color="#B1B1B6" size="28"></u-icon></image></view>
 						<view>添加</view>
@@ -36,23 +34,21 @@
 		</view>
 		
 		<!-- 规格二 -->
-				
 		<view class="l-size" v-if="typeList[1]">
-			 <!-- v-for="(item,index) in typeList" :key="index" -->
 			<view class=" l-my-flex-bw ">
 				<view class="l-size-title">{{typeList[1].size}}</view>
-				<view><u-icon name="close" color="#B1B1B6" size="28"></u-icon></view>
+				<view @tap="del_type1"><u-icon name="close" color="#B1B1B6" size="28"></u-icon></view>
 			</view>
 			<!-- 颜色种类 -->
 			<view class="l-my-flex-start">
 				
-				<view class="l-size-item l-my-flex-bw" v-for="(item,index) in list1" :key="index">
+				<view class="l-size-item l-my-flex-bw" v-for="(item,index) in list1" :key="index" @tap="del1">
 					<view>{{item.size}}</view>
-					<view><image src="../../static/del.png" mode=""></image></view>
+					<view :data-index="index"><image :data-index="index" src="../../static/del.png" mode=""></image></view>
 				</view>
 				
 				<!-- 添加 -->
-				<view @click="addSize1">
+				<view @tap="addSize1">
 					<view class="l-size-item l-my-flex-center" v-if="!addStatus1">
 						<view><u-icon name="plus" color="#B1B1B6" size="28"></u-icon></image></view>
 						<view>添加</view>
@@ -67,17 +63,23 @@
 		
 		<!-- 添加规格 -->
 		<view class="l-add-size">
-			<view class="l-my-flex-center" @click="btnClick">
+			<view class="l-my-flex-center" @tap="btnClick">
 				<view><u-icon name="plus" color="#B1B1B6" size="28"></u-icon></image></view>
 				<view>添加</view>
 			</view>
 		</view>
 		
-		<!-- 价格及库存 -->
-		<view class="l-price">
-			价格及库存
+		<!-- 批量 价格及库存 -->
+		<view class="l-price l-my-flex-bw animated shakeX delay-.5s">
+			<view>
+				价格及库存
+			</view>
+			<view class="l-batch-setting" @tap="setting" v-if="batch_setting">
+				批量设置
+			</view>
 		</view>
-		<!-- 规格列表 -->
+		
+		<!-- 已选中规格列表 -->
 		<view class="l-type-list">
 			<!-- 规格列表项 -->
 			<view class="l-type-item" v-for="(item,index) of typeListInfo" :key="index">
@@ -89,11 +91,11 @@
 				<view class="l-type-item-price l-my-flex-bw">
 					<view class="l-my-flex-bw">
 						<view>原价</view>
-						<view class="l-price-money">￥0.00</view>
+						<view class="l-price-money">￥{{item.oldPrice?item.oldPrice:'0.00'}}</view>
 					</view>
 					<view class="l-my-flex-bw">
 						<view>现价</view>
-						<view class="l-price-money">￥0.00</view>
+						<view class="l-price-money">￥{{item.newPrice?item.newPrice:'0.00'}}</view>
 					</view>
 				</view>
 				
@@ -101,36 +103,40 @@
 				<view class="l-type-item-price l-my-flex-bw">
 					<view class="l-my-flex-bw">
 						<view>库存</view>
-						<view class="l-price-kucun">20</view>
+						<view class="l-price-kucun">{{item.stock}}</view>
 					</view>
 				</view>
 				<!-- 预览图 -->
 				<view class="l-pic-prev">
 					<view class="">
 						<view class="l-pic-text">预览图</view>
-						<view class="l-pic-upload">
-							<view><image src="../../static/l-upload.png" mode=""></image></view>
-							<view class="">上传图片</view>
+						<view class="l-pic-upload" v-if="item.url" @tap="chooseImage">
+							<image class="l-upload-photo" style="width: 123rpx;height:123rpx" :data-index="index" :src="item.url" mode=""></image>
+						</view>
+						<view class="l-pic-upload" v-if="!item.url">
+							<view @tap="chooseImage"><image :data-index="index" src="../../static/l-upload.png" mode=""></image></view>
+							<view @tap="chooseImage" class="" :data-index="index">上传图片</view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
 		
+		<!-- 规格列表 -->
 		<view class="u-demo-area">
 			<u-popup border-radius="10" v-model="show" 
-				:mode="mode" 
-				name="123"
-				length="50%" :mask="mask"
+				mode="bottom"
+				@close="close"
+				length="auto" :mask="mask"
 				:closeable="closeable"
 				:close-icon-pos="closeIconPos"
 			>
 				<view class="l-popup">
 					<!-- title -->
 					<view class="l-my-flex-bw l-popup-title">
-						<view class="l-popup-cancel" @click="cancelSelect">取消</view>
+						<view class="l-popup-cancel" @tap="cancelSelect">取消</view>
 						<view>添加商品规格</view>
-						<view class="l-popup-confirm" @click="comfirmSelect">确认</view>
+						<view class="l-popup-confirm" @tap="comfirmSelect">确认</view>
 					</view>
 					<!-- 已选择选项数量 -->
 					<view class="l-my-flex-start l-select-info">
@@ -138,17 +144,67 @@
 						 <span class="l-select-sum">{{select_sum}}/2</span>
 					</view>
 					<!-- 选项 -->
-					<view class="l-select-list l-my-flex-start" @click="select_item">
-						<view class="l-select-item" v-for="(item,index) of sizeList" :data-id="item.id" :key="index" :class="(active_index[0]==item.id||active_index[1]==item.id)?'selectActive':''">{{item.size}}</view>
+					<view class="l-select-list l-my-flex-start" @longtap="long_select_item"  @tap="select_item">
+						<view class="l-select-item l-select-del" 
+									v-for="(item,index) of sizeList" 
+									:data-id="item.id" :key="index" 
+									:class="{'selectActive':active_index[0]==item.id||active_index[1]==item.id,'animated heartBeat delay-.5s':animate}"
+							>
+							{{item.size}} 
+							<!-- 删除按钮 -->
+							<view class="l-select-del-icon" v-if="del_rule_status" @tap="del_rule_item(index)"><image src="../../static/del.png" mode=""></image></view>
+						</view>
+							
+							<!-- 自定义 -->
+						<view class="l-select-item" @tap="set_custom" v-if="!set_customs">
+							<view>自定义</view>
+						</view>
+						<view class="l-set-custom" v-if="set_customs">
+							<input type="text" v-model="set_custom_val" :focus="setFocus" />
+							<view @tap="set_rule_confirm">确定</view>
+						</view>
 					</view>
 				</view>
 			</u-popup>
 		</view>
 		
+		<view class="zanwei"></view>
+		<view class="confirm-bottom">	</view>
+		<view class="confirm-up">
+			保存
+		</view>
 		<!-- 弹出框 -->
 		<view>
 				<u-toast ref="uToast" />
 		</view>
+		<!-- 批量设置 弹出框 -->
+		<u-popup v-model="show_setting" mode="center" border-radius="14">
+				<view class="l-setting">
+					<view>批量设置价格及库存</view>
+					<view class="l-setting-old-price l-my-flex-start">
+						<view class="l-old-price">原价</view>
+						<view class="l-old-price-value"><input type="text" v-model="l_setting_old_price" placeholder="￥0.00"/></view>
+					</view>
+					
+					<view class="l-setting-old-price l-my-flex-start">
+						<view class="l-old-price">现价</view>
+						<view class="l-old-price-value"><input type="text" v-model="l_setting_new_price" placeholder="￥0.00"/></view>
+					</view>
+					
+					<view class="l-setting-old-price l-my-flex-start">
+						<view class="l-old-price">库存</view>
+						<view class="l-old-price-value"><input type="text" v-model="l_setting_stock" placeholder="0"/></view>
+					</view>
+					<!-- confirm -->
+					<view class="l-confirm">
+						<view class="l-setting-confirm l-my-flex-bw">
+							<view class="l-setting-cancel" @tap="l_setting_cancel">取消</view>
+							<view class="l-setting-confirm" @tap="l_setting_confirm">确定</view>
+						</view>
+					</view>
+					
+				</view>
+			</u-popup>
 	</view>
 </template>
 
@@ -167,9 +223,8 @@
 				list1:[],
 				id1:999,
 				addValue1:"",
-				
+				// 规格弹出框
 				show: false,
-				mode: 'bottom',
 				mask: true, // 是否显示遮罩
 				closeable: false,
 				closeIconPos: 'top-right',
@@ -224,7 +279,26 @@
 				// 已选则总规格列表
 				typeListInfo:[],
 				// 混合规格id
-				id2:1000
+				id2:1000,
+				// 长按动画
+				animate:false,
+				// 批量设置按钮显/隐
+				batch_setting:false,
+				// 批量设置框显/隐
+				show_setting:false,
+				
+				// 批量设置价格及库存
+				l_setting_old_price:"",
+				l_setting_new_price:"",
+				l_setting_stock:"",
+				
+				// 自定义 规格名输入框
+				set_customs:false,
+				setFocus:false,
+				set_custom_val:"",
+				// 长按显示删除按钮 状态字段
+				del_rule_status:false
+				
 			}
 		},
 		onLoad() {
@@ -232,12 +306,18 @@
 		},
 		methods: {
 		  btnClick() {
-		  	// console.log(this.show);
+				// this.animate = true
 		  	this.show = true;
 				this.select_sum = "0"
-		  	// console.log(this.show);
 		  },
-			close() {},
+			// 关闭 选择规格 弹幕
+			close() {
+				this.set_custom_val=""
+				this.setFocus= false;
+				this.set_customs= false;
+				this.del_rule_status = false
+				this.active_index = []
+			},
 			open() {},
 			addSize0(){
 				this.addStatus0 = true
@@ -313,21 +393,39 @@
 						this.id2 =parseInt(this.id2)+1;
 						obj.id = this.id2;
 						obj.size = item.size +"-"+idx.size;
+						obj.url = "";
 						arr.push(obj)
 					}
 				}
 				this.typeListInfo = arr;
-				console.log(this.typeListInfo)
+				if(this.typeListInfo.length){
+					this.batch_setting = true
+				}else{
+					this.batch_setting = false
+				}
 			},
+			// 选择规格
 			select_item(e){
-				// e.target.dataset.id
-				// this.active_index  arr
+				if(this.del_rule_status == true){
+					return
+				}
 				var selectId = e.target.dataset.id;
 				var active_arr = this.active_index;
 				var lengths = this.active_index.length;
+				if(!selectId){
+					return
+				}
+				// 首选查找数组中是否 已有该类型   有的话直接移除
+				var index = active_arr.indexOf(selectId)
+				if(index != -1){
+					var indexs = Math.abs(index-1);
+					var new_active_arr = active_arr.splice(indexs,1)
+					this.active_index = new_active_arr
+					return
+				}
+				// 如果数组中没有该 类型 判断是否 已经选择两种类型
 				if(lengths<=2){
-					var index = active_arr.indexOf(selectId)
-					console.log(index)
+					// console.log(index)
 					if(index != -1){
 						var indexs = Math.abs(index-1);
 						var new_active_arr = active_arr.splice(indexs,1)
@@ -339,21 +437,91 @@
 				if(this.active_index.length>2){
 					
 				}else{
-					
-				this.select_sum=this.active_index.length
+					this.select_sum=this.active_index.length
 				}
+			},
+			chooseImage(e){
+				console.log(e)
+				var index = e.target.dataset.index
+				uni.showToast({
+					title:"上传中...",
+					icon:"none"
+				})
+				var that = this ;
+				uni.chooseImage({
+						sourceType:['camera', 'album'],
+						// #ifdef MP-WEIXIN
+						sizeType:['compressed', 'original'],
+						// #endif
+						count: 1,
+						success: (res) => {
+							uni.hideToast()
+							uni.uploadFile({
+							    url: 'http://www.moo9995.com:8089/wx/storage/batchInsertShops', //仅为示例，非真实的接口地址
+							    filePath: res.tempFilePaths[0],
+							    name: 'file',
+							    formData: {
+							        'user': 'test'
+							    },
+							    success: function (uploadFileRes) {
+										
+										var obj = JSON.parse(uploadFileRes.data);
+										if(obj.code==200){
+											console.log(obj.data.url)
+											that.typeListInfo[index].url = obj.data.url
+											console.log(that.typeListInfo)
+										}
+										uni.showToast({
+											title:"正在上传",
+											icon:"none"
+										})
+							    }
+							});
+						}
+					})
+			},
+			long_select_item(){
+				this.animate = !this.animate
+				this.del_rule_status = true
+				this.active_index= []
+				this.select_sum = 0
+			},
+			// 删除规格单项
+			del0(e){
+				var index = e.target.dataset.index
+				this.list0.splice(index,1)
+				this.setListInfo()
+			},
+			del1(e){
+				var index = e.target.dataset.index
+				this.list1.splice(index,1)
+				this.setListInfo()
+			},
+			// 删除规格总类
+			del_type0(){
+				this.typeList.splice(0,1)
+				this.list0 = []
+				this.setListInfo()
+			},
+			del_type1(){
+				this.typeList.splice(1,1)
+				this.list0 = []
+				this.setListInfo()
 			},
 			cancelSelect(){
 				this.show = false
 				this.active_index = []
 			},
 			comfirmSelect(){
+				this.del_rule_status = false
 				this.show = false;
 				this.typeList =[]
 				this.typeListInfo = []
 				this.list0 =[]
 				this.list1 =[]
-				
+				this.setFocus= false;
+				this.set_customs= false;
+				this.set_custom_val=""
 				var typeList = []
 				for(var item of this.active_index){
 					for(var idx of this.sizeList){
@@ -365,7 +533,60 @@
 				this.typeList = typeList
 				this.active_index = []
 			},
-		
+			// 显示批量设置价格和库存
+			setting(){
+				this.show_setting = true
+			},
+			l_setting_confirm(){
+				this.show_setting = false;
+				// 订单 价格库存列表
+				var arr = this.typeListInfo
+				for(var item of arr){
+					item.oldPrice = this.l_setting_old_price
+					item.newPrice = this.l_setting_new_price
+					item.stock = this.l_setting_stock
+				}
+				this.typeListInfo = arr;
+				this.l_setting_cancel();
+			},
+			l_setting_cancel(){
+				this.show_setting = false;
+				this.l_setting_old_price="";
+				this.l_setting_new_price="";
+				this.l_setting_stock="";
+			},
+			// 自定义规格名
+			set_custom(){
+				this.set_customs= true;
+				this.setFocus= true;
+				this.del_rule_status = false
+			},
+			// 输入自定义规格名 确定
+			set_rule_confirm(){
+				this.setFocus= false;
+				this.set_customs= false;
+				if(this.set_custom_val){
+					var lengths = this.sizeList.length
+					var obj = {}
+					if(this.sizeList.length){
+						obj.id = parseInt(this.sizeList[lengths-1].id)+1;
+					}else{
+						obj.id = 0;
+					}
+					obj.size = this.set_custom_val;
+					this.sizeList.push(obj)
+					this.set_custom_val=""
+				}else{
+					this.$refs.uToast.show({
+										title: '添加错误',
+										type: 'warning'
+									})
+				}
+			},
+			// 删除 选择规格列表中的 项
+			del_rule_item(index){
+				this.sizeList.splice(index,1)
+			},
 		}
 	}
 </script>
@@ -416,7 +637,7 @@
 }
 .l-popup{
 	width: 100%;
-	padding: 36rpx 27rpx;
+	padding: 36rpx 27rpx 80rpx 27rpx;
 }
 .l-popup-title{
 	padding-bottom: 16rpx;
@@ -450,6 +671,7 @@
 	color:#333333;
 }
 .l-select-item{
+	position: relative;
 	width: 212rpx;
 	height: 58rpx;
 	line-height: 58rpx;
@@ -460,11 +682,37 @@
 	font-family:PingFang SC;
 	font-weight:400;
 	color:rgba(51,51,51,1);
-	transition: all .5s;
+	transition: all .3s;
+}
+.l-select-del{
+	position: relative;
+}
+.l-select-del-icon{
+	position: absolute;
+	top: -16rpx;
+	right: -14rpx;
+}
+.l-select-del-icon image{
+	width: 32rpx;
+	height: 32rpx;
+}
+.l-select-item input{
+	height: 58rpx;
+	font-size: 27rpx;
+}
+.l-kayboard-input{
+	position: absolute;
+	background: #FFFFFF;
+	z-index: 10;
+	width: 750rpx;
+	height: 90rpx;
+	left: -258rpx;
+	bottom: 0;
 }
 .selectActive{
 	color: #FFFFFF;
 	background:rgba(215,185,117,1);
+	font-size: 27rpx;
 }
 .l-price{
 	padding: 27rpx 26rpx;
@@ -477,7 +725,6 @@
 }
 .l-type-list{
 	/* margin-top: 9rpx; */
-	
 }
 .l-type-item{
 	padding: 27rpx 26rpx;
@@ -538,5 +785,144 @@
 .l-pic-upload image{
 	width: 48rpx;
 	height: 38rpx;
+}
+/* 底部按钮 */
+.confirm-up{
+	width: 696rpx;
+	text-align: center;
+	height: 88.77rpx;
+	line-height: 88.77rpx;
+	position: fixed;
+	bottom: 62.5rpx;
+	left: 27.17rpx;
+	z-index: 1;
+	background:rgba(215,185,117,1);
+	border-radius:14px;
+	font-size:27rpx;
+	font-family:PingFang SC;
+	font-weight:bold;
+	color:rgba(255,255,255,1);
+}
+.confirm-bottom{
+	width:268rpx;
+	height:9rpx;
+	background:rgba(0,0,0,1);
+	position: fixed;
+	bottom: 14.5rpx;
+	left: 241rpx;
+	border-radius:5rpx;
+}
+.zanwei{
+	height: 143rpx;
+	background-color:  rgba(248,248,248,1);
+}
+.l-batch-setting{
+	font-size:27rpx;
+	font-family:PingFang SC;
+	font-weight:400;
+	color:rgba(215,185,117,1);
+}
+.l-setting{
+	position: relative;
+	width: 507rpx;
+	height: 476rpx;
+	text-align: center;
+	padding: 27rpx 45rpx 0 45rpx;
+	box-sizing: border-box;
+	font-size:27rpx;
+	font-family:PingFang SC;
+	font-weight:400;
+	color:rgba(51,51,51,1);
+}
+.l-setting-old-price{
+	height: 97rpx;
+	border-bottom: 2rpx solid rgba(238,238,238,1);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+}
+.l-old-price{
+	padding-right: 43rpx;
+	font-size:27rpx;
+	font-family:PingFang SC;
+	font-weight:400;
+	color:rgba(51,51,51,1);
+}
+.l-old-price-value{}
+.l-old-price-value input{
+	text-align: left;
+	font-size:27rpx;
+	font-family:PingFang SC;
+	font-weight:400;
+	color:rgba(177,177,182,1);
+	height: 97rpx;
+	width: 230rpx;
+}
+.l-confirm{
+	position: absolute;
+	left: 0;
+	width: 100%;
+	bottom: 0;
+}
+.l-setting-confirm{
+	height: 90rpx;
+	border-top: 2rpx solid rgba(238,238,238,1);
+}
+.l-setting-confirm>view{
+	width: 50%;
+	height: 90rpx;
+	line-height: 90rpx;
+	text-align: center;
+	border-right: 2rpx solid rgba(238,238,238,1);
+}
+.l-setting-cancel{
+	font-size:27rpx;
+	font-family:PingFang SC;
+	font-weight:400;
+	color:rgba(177,177,182,1);
+}
+.l-setting-confirm{
+	font-size:27rpx;
+	font-family:PingFang SC;
+	font-weight:400;
+	color:rgba(215,185,117,1);
+}
+.l-upload-photo{
+	width: 123rpx;
+	height: 123rpx;
+}
+.l-add-rule-confirm{
+	width: 100%;
+	height: 80rpx;
+	font-size: 30rpx;
+	color: #FFFFFF;
+	line-height: 80rpx;
+	/* margin */
+	background-color: rgba(215,185,117,1);
+}
+.l-set-custom{
+	width: 100%;
+	height: 98rpx;
+	padding: 26rpx;
+	background: #FFFFFF;
+	padding-top: 9rpx;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-top: 2rpx solid rgba(238,238,238,1);
+	margin-top: 20rpx;
+}
+.l-set-custom>view{
+	color: rgba(215,185,117,1);
+	font-size: 27rpx;
+	
+}
+.l-set-custom input{
+	text-align: left;
+	height: 98rpx;
+	font-size: 26rpx;
+	font-family:PingFang SC;
+	font-weight:400;
+	color:rgba(51,51,51,1);
 }
 </style>

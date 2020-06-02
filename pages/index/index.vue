@@ -8,6 +8,7 @@
 </template>
 
 <script>
+	import { mapActions } from 'vuex'
 	export default {
 		data() {
 			return {
@@ -17,7 +18,12 @@
 		onLoad() {
 
 		},
+		created () {
+			// 测试登陆
+			this.loginAction()
+		},
 		methods: {
+			...mapActions(['loginAction']),
 		  upload(){
 				uni.navigateTo({
 				    url: '../upload/index'

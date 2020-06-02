@@ -7,24 +7,24 @@
 				<view class="l-upload-title-text">	添加主图 </view>
 			</view>
 			<view class="l-upload-main">
-				<view class="l-upload-image">
+				<view class="l-upload-image" v-for="(item,index) of imgList1" :key="index">
 					<!-- 删除按钮 -->
-					<view class="l-upload-image-del">
-						<image src="../../static/l-upload-close.png" mode=""></image>
+					<view class="l-upload-image-del" @tap="del_sencond1">
+						<image :data-id="index" src="../../static/l-upload-close.png" mode=""></image>
 					</view>
-					<image src="http://img12.360buyimg.com/cms/jfs/t1/11317/27/8593/254110/5c6f4e1aEf4128979/41cfe3da4bd46930.png!q95.webp" mode=""></image>
+					<image :src="item" mode=""></image>
 					<!-- 封面图 文字样式 -->
-					<view class="l-upload-image-text">
+					<view v-if="index==0" class="l-upload-image-text">
 						封面图
 					</view>
 				</view>
 				<!-- 添加按钮 -->
-				<view class="l-flex-col l-upload-image-btn">
+				<view class="l-flex-col l-upload-image-btn" @tap="chooseImage1" v-if="imgListLength!=5">
 					<view>
 						<image class="l-upload-photo" src="../../static/l-upload-photo.png" mode=""></image>
 					</view>
 					<view class="l-upload-photo-text">
-						1/5
+						{{imgListLength1}}/5
 					</view>
 				</view>
 				
@@ -43,7 +43,7 @@
 			</view>
 		</view>
 		<!-- 类目 -->
-		<view class="l-type-list l-margin-top-sm" @click="showType">
+		<view class="l-type-list l-margin-top-sm" @tap="showType">
 			<view class="l-upload-title">
 				<view class="l-upload-title-icon">*</view>
 				<view class="l-upload-title-text"> 类目 </view>
@@ -56,7 +56,7 @@
 			<u-picker mode="selector" @confirm="confirm" v-model="show"  :default-selector="[0]" :range="selectorObj" range-key="cateName"></u-picker>
 		
 		<!-- 商品规格 -->
-		<view class="l-type-list l-margin-top-md" @click="changeInfo">
+		<view class="l-type-list l-margin-top-md" @tap="changeInfo">
 			<view class="l-upload-title">
 				<view class="l-upload-title-icon">*</view>
 				<view class="l-upload-title-text"> 商品规格 </view>
@@ -80,18 +80,18 @@
 			<view class="l-upload-main">
 				<view class="l-upload-image" v-for="(item,index) of imgList" :key="index">
 					<!-- 删除按钮 -->
-					<view class="l-upload-image-del">
-						<image src="../../static/l-upload-close.png" mode=""></image>
+					<view class="l-upload-image-del" @tap="del_sencond">
+						<image :data-id="index" src="../../static/l-upload-close.png" mode=""></image>
 					</view>
 					<image :src="item" mode=""></image>
 				</view>
 				<!-- 添加按钮 -->
-				<view class="l-flex-col l-upload-image-btn" @tap="chooseImage">
+				<view class="l-flex-col l-upload-image-btn" @tap="chooseImage" v-if="imgListLength!=5">
 					<view>
 						<image class="l-upload-photo" src="../../static/l-upload-photo.png" mode=""></image>
 					</view>
 					<view class="l-upload-photo-text">
-						1/5
+						{{imgListLength}}/5
 					</view>
 				</view>
 			</view>
@@ -151,7 +151,7 @@
 				<view class="l-upload-title-icon" style="opacity: 0;">*</view>
 				<view class="l-upload-title-text"> 运费 </view>
 			</view>
-			<view class="l-type-list-item l-send-price" @click="changeInfo">
+			<view class="l-type-list-item l-send-price" @tap="changeInfo">
 				0.00
 			</view>
 		</view>
@@ -182,7 +182,12 @@
 						id: 2
 					}
 				],
+				
+				imgList1:[],
+				imgListLength1:"0",
+				// 商品文案 上传图片
 				imgList:[],
+				imgListLength:"0",
 				// 同步商品
 				list: [
 								{
@@ -235,7 +240,47 @@
 			checkboxGroupChange(e) {
 				// console.log(e);
 			},
-			//选择图片
+			// 主图图片上次
+			chooseImage1(){
+				uni.showToast({
+					title:"上传中...",
+					icon:"none"
+				})
+				var that = this ;
+				uni.chooseImage({
+						sourceType:['camera', 'album'],
+						// #ifdef MP-WEIXIN
+						sizeType:['compressed', 'original'],
+						// #endif
+						count: 1,
+						success: (res) => {
+							uni.hideToast()
+							uni.uploadFile({
+							    url: 'http://www.moo9995.com:8089/wx/storage/batchInsertShops', //仅为示例，非真实的接口地址
+							    filePath: res.tempFilePaths[0],
+							    name: 'file',
+							    formData: {
+							        'user': 'test'
+							    },
+							    success: function (uploadFileRes) {
+										
+										var obj = JSON.parse(uploadFileRes.data);
+										if(obj.code==200){
+											var arr = [];
+											that.imgList1 = that.imgList1.concat(obj.data.url);
+											that.imgListLength1 = that.imgList1.length
+										}
+										uni.showToast({
+											title:"正在上传",
+											icon:"none"
+										})
+							    }
+							});
+						}
+					})
+			},
+			
+			//商品文案选择图片
 			chooseImage: async function() {
 				uni.showToast({
 					title:"上传中...",
@@ -263,9 +308,8 @@
 										var obj = JSON.parse(uploadFileRes.data);
 										if(obj.code==200){
 											var arr = [];
-											// arr[0] = 
-											console.log(obj.data)  
 											that.imgList = that.imgList.concat(obj.data.url);
+											that.imgListLength = that.imgList.length
 										}
 										uni.showToast({
 											title:"正在上传",
@@ -276,6 +320,20 @@
 						}
 					})
 			},
+			// 主图删除某一张图片
+			del_sencond1(e){
+				var index = e.target.dataset.id;
+				var imgList = this.imgList1;
+				this.imgListLength1 = imgList.length-1
+				imgList.splice(index,1);
+			},
+			// 商品文案删除某一张图片
+			del_sencond(e){
+				var index = e.target.dataset.id;
+				var imgList = this.imgList;
+				this.imgListLength = imgList.length-1
+				imgList.splice(index,1);
+			}
 		}
 	}
 </script>

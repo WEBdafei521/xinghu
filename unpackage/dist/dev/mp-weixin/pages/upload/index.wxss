@@ -90,35 +90,35 @@
 	padding: 27rpx 56rpx;
 }
 .l-upload-photo{
-	
-	width: 75rpx;
-	height: 65rpx;
+	width: 44rpx;
+	height: 39rpx;
 }
 .l-upload-image-btn{
-	width:200rpx;
-	height:200rpx;
+	width:116rpx;
+	height:116rpx;
+	margin-top: 10rpx;
 	border:2rpx solid rgba(177,177,182,.5);
 }
 .l-upload-image{
 	
 	position: relative;
-	width:200rpx;
-	height:200rpx;
-	margin-right: 10rpx;
+	width:116rpx;
+	height:116rpx;
+	margin: 10rpx 10rpx 0 0 ;
 }
 .l-upload-image image{
-	width: 200rpx;
-	height: 200rpx;
+	width: 123rpx;
+	height: 123rpx;
 }
 .l-upload-photo-text{
-	font-size:27rpx;
+	font-size:22rpx;
 	font-family:PingFang SC;
 	font-weight:400;
 	color:rgba(177,177,182,1);
 }
 .l-upload-image-del image{
-	width: 36rpx;
-	height: 36rpx;
+	width: 33rpx;
+	height: 33rpx;
 }
 .l-upload-image-del{
 	position: absolute;
@@ -130,24 +130,17 @@
 		position: absolute;
 		bottom: 0;
 		z-index: 1;
-		font-size:27rpx;
+		font-size:22rpx;
 		font-family:PingFang SC;
 		font-weight:400;
 		color:#fff;
-		width: 200rpx;
+		width: 123rpx;
 		text-align: center;
-		width:199rpx;
-		height:62rpx;
-		line-height: 60rpx;
+		height:38rpx;
+		line-height: 38rpx;
 		color: #fff;
 		background:rgba(215,185,117,1);
 		opacity:0.7;
-}
-.l-limit{
-	height: 200rpx;
-	width: 200rpx;
-	line-height: 300rpx;
-	text-align: center;
 }
 .l-title{
 	display: -webkit-box;
@@ -230,19 +223,16 @@
 	border-top:2rpx solid rgba(248,248,248,1);
 }
 .l-margin-top-sm{
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+	box-sizing: border-box;
 	border-top:9rpx solid rgba(248,248,248,1);
 }
 .l-margin-top-md{
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
-	border-top: 18rpx solid rgba(248,248,248,1);
+	box-sizing: border-box;
+	border-top: 9rpx solid rgba(248,248,248,1);
 }
 .l-margin-top-lg{
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
-	border-top: 27rpx solid rgba(248,248,248,1);
+	box-sizing: border-box;
+	border-top: 9rpx solid rgba(248,248,248,1);
 }
 .l-product-title{
 	padding:0 58rpx;
@@ -262,8 +252,7 @@
 	left: 27.17rpx;
 	z-index: 1;
 	background:rgba(215,185,117,1);
-	-webkit-border-radius:14px;
-	        border-radius:14px;
+	border-radius:14px;
 	font-size:27rpx;
 	font-family:PingFang SC;
 	font-weight:bold;
@@ -276,8 +265,7 @@
 	position: fixed;
 	bottom: 14.5rpx;
 	left: 241rpx;
-	-webkit-border-radius:5rpx;
-	        border-radius:5rpx;
+	border-radius:5rpx;
 }
 .zanwei{
 	/* width: 143r */
